@@ -8418,7 +8418,10 @@ def _cmd_update_check():
         print("✗ Not a git repository — cannot check for updates.")
         sys.exit(1)
 
-    git_cmd = ["git"]
+    # Prefer Homebrew git if available, fall back to PATH lookup
+    import shutil as _shutil
+    _git_path = _shutil.which("git") or "/opt/homebrew/bin/git" if sys.platform != "win32" else "git"
+    git_cmd = [_git_path]
     if sys.platform == "win32":
         git_cmd = ["git", "-c", "windows.appendAtomically=false"]
 
@@ -8780,7 +8783,10 @@ def _cmd_update_impl(args, gateway_mode: bool):
         )
 
     # Build git command once — reused for fork detection and the update itself.
-    git_cmd = ["git"]
+    # Prefer Homebrew git if available, fall back to PATH lookup
+    import shutil as _shutil
+    _git_path = _shutil.which("git") or "/opt/homebrew/bin/git" if sys.platform != "win32" else "git"
+    git_cmd = [_git_path]
     if sys.platform == "win32":
         git_cmd = ["git", "-c", "windows.appendAtomically=false"]
 
